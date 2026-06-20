@@ -6,6 +6,7 @@
     <title>Majestic Helper — Безопасная загрузка</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Creepster&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💀</text></svg>">
     <style>
         :root {
             --accent: #a06cff;
@@ -306,8 +307,8 @@
         </div>
 
         <div class="buttons">
-            <!-- Кнопка скачивания с актуальной ссылкой на Яндекс Диск -->
-            <a href="https://disk.yandex.ru/d/890oBTh7iXPU9A" target="_blank" class="btn" id="downloadBtn"><i class="fas fa-download"></i> Скачать с Яндекс Диска</a>
+            <!-- Новая ссылка на Яндекс Диск -->
+            <a href="https://disk.yandex.ru/d/2g88JpKZ1AJpTw" target="_blank" class="btn" id="downloadBtn"><i class="fas fa-download"></i> Скачать с Яндекс Диска</a>
             <a href="https://www.virustotal.com/gui/file/f083379a71495c25a0dbf573d545baf64efba720d0b27b6cd11a18a52262b298/detection" target="_blank" class="btn btn-secondary"><i class="fas fa-shield-alt"></i> Проверить на VirusTotal</a>
         </div>
 
@@ -467,13 +468,10 @@ initStars();
 animate();
 
 // ------------------------------------------------------------
-// 2. ОБРАБОТЧИК КНОПКИ СКАЧИВАНИЯ (ссылка уже в href)
+// 2. ОБРАБОТЧИК КНОПКИ СКАЧИВАНИЯ
 // ------------------------------------------------------------
-// Кнопка "Скачать с Яндекс Диска" теперь использует прямую ссылку в href.
-// Дополнительный обработчик не нужен, но оставлен для совместимости.
 document.getElementById('downloadBtn').addEventListener('click', function(e) {
     // Ссылка открывается в новой вкладке через target="_blank"
-    // Ничего дополнительно делать не нужно.
     console.log('Скачивание с Яндекс Диска');
 });
 
