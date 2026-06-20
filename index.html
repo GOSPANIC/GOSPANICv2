@@ -306,8 +306,9 @@
         </div>
 
         <div class="buttons">
-            <a href="#" class="btn" id="downloadBtn"><i class="fas fa-download"></i> Скачать с Яндекс Диска</a>
-            <a href="https://www.virustotal.com/gui/home/upload" target="_blank" class="btn btn-secondary"><i class="fas fa-shield-alt"></i> Проверить на VirusTotal</a>
+            <!-- Кнопка скачивания с актуальной ссылкой на Яндекс Диск -->
+            <a href="https://disk.yandex.ru/d/890oBTh7iXPU9A" target="_blank" class="btn" id="downloadBtn"><i class="fas fa-download"></i> Скачать с Яндекс Диска</a>
+            <a href="https://www.virustotal.com/gui/file/f083379a71495c25a0dbf573d545baf64efba720d0b27b6cd11a18a52262b298/detection" target="_blank" class="btn btn-secondary"><i class="fas fa-shield-alt"></i> Проверить на VirusTotal</a>
         </div>
 
         <div class="footer-note">
@@ -466,12 +467,14 @@ initStars();
 animate();
 
 // ------------------------------------------------------------
-// 2. ОБРАБОТЧИК КНОПКИ СКАЧИВАНИЯ
+// 2. ОБРАБОТЧИК КНОПКИ СКАЧИВАНИЯ (ссылка уже в href)
 // ------------------------------------------------------------
+// Кнопка "Скачать с Яндекс Диска" теперь использует прямую ссылку в href.
+// Дополнительный обработчик не нужен, но оставлен для совместимости.
 document.getElementById('downloadBtn').addEventListener('click', function(e) {
-    e.preventDefault();
-    const yandexLink = 'https://disk.yandex.ru/d/ваша_ссылка';
-    window.open(yandexLink, '_blank');
+    // Ссылка открывается в новой вкладке через target="_blank"
+    // Ничего дополнительно делать не нужно.
+    console.log('Скачивание с Яндекс Диска');
 });
 
 console.log('Majestic Helper загружен.');
