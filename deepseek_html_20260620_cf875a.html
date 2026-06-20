@@ -13,32 +13,27 @@
             --accent-glow: rgba(160, 100, 255, 0.3);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             background: #0a0a12;
             font-family: 'Rajdhani', sans-serif;
             color: #e0e0e0;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         .app-window {
             position: relative;
-            width: 96vw;
-            max-width: 900px;
-            height: 92vh;
-            max-height: 750px;
-            background: rgba(12, 12, 24, 0.82);
-            backdrop-filter: blur(8px);
-            border-radius: 18px;
-            border: 1px solid var(--accent-dim);
-            box-shadow: 0 0 80px var(--accent-glow);
+            width: 100vw;
+            height: 100vh;
+            background: rgba(12, 12, 24, 0.85);
+            backdrop-filter: blur(6px);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            padding: 18px 20px 20px 20px;
-            transition: border-color 0.4s, box-shadow 0.4s;
+            padding: 18px 24px 20px 24px;
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
         }
         #starCanvas {
             position: absolute;
@@ -48,7 +43,6 @@
             height: 100%;
             pointer-events: none;
             z-index: 0;
-            border-radius: 18px;
         }
 
         /* ---- АНИМИРОВАННЫЙ ВОДЯНОЙ ЗНАК ---- */
@@ -207,7 +201,53 @@
             margin-right: 6px;
         }
 
-        /* ---- НОВЫЙ ФУТЕР С ЛИЦЕНЗИЕЙ ---- */
+        /* ---- БЛОК ТЕХПОДДЕРЖКИ ---- */
+        .support-block {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .support-block .label {
+            font-size: 0.85rem;
+            color: #888;
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
+        .support-contacts {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .support-contacts a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 6px 16px;
+            border-radius: 30px;
+            border: 1px solid var(--accent-dim);
+            transition: all 0.3s ease;
+            background: rgba(0,0,0,0.2);
+        }
+        .support-contacts a:hover {
+            border-color: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 30px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+        .support-contacts a i {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        /* ---- ФУТЕР С ЛИЦЕНЗИЕЙ ---- */
         .site-footer {
             position: relative;
             z-index: 10;
@@ -234,13 +274,15 @@
         }
 
         @media (max-width: 600px) {
-            .app-window { padding: 12px; height: 96vh; }
+            .app-window { padding: 12px; }
             .logo h1 { font-size: 1.6rem; }
             .greeting { font-size: 1.5rem; }
             .buttons { flex-direction: column; align-items: stretch; }
             .btn { justify-content: center; }
             .watermark { font-size: 0.75rem; bottom: 12px; right: 16px; }
             .site-footer { font-size: 0.65rem; }
+            .support-contacts { gap: 12px; }
+            .support-contacts a { font-size: 0.85rem; padding: 4px 12px; }
         }
     </style>
 </head>
@@ -269,21 +311,34 @@
         </div>
 
         <div class="footer-note">
-            <i class="fas fa-info-circle"></i> Если ссылка на скачивание не работает, обратитесь к автору.
+            <i class="fas fa-info-circle"></i> Если ссылка на скачивание не работает, обратитесь в техподдержку.
+        </div>
+
+        <!-- БЛОК ТЕХПОДДЕРЖКИ -->
+        <div class="support-block">
+            <div class="label"><i class="fas fa-headset"></i> Техподдержка</div>
+            <div class="support-contacts">
+                <a href="https://discord.com/users/cyanide_tgk" target="_blank">
+                    <i class="fab fa-discord"></i> cyanide_tgk
+                </a>
+                <a href="https://discord.com/users/chelovek3000" target="_blank">
+                    <i class="fab fa-discord"></i> chelovek3000
+                </a>
+            </div>
         </div>
     </div>
 
-    <!-- НОВЫЙ ФУТЕР -->
+    <!-- ФУТЕР -->
     <div class="site-footer">
-        <i class="fas fa-copyright"></i> 2026 Reznov FAMQ. All rights reserved. 
-        <i class="fas fa-code-branch" style="margin-left: 8px;"></i> 
+        <i class="fas fa-copyright"></i> 2026 Reznov FAMQ. All rights reserved.
+        <i class="fas fa-code-branch" style="margin-left: 8px;"></i>
         <a href="#" target="_blank">MIT License</a>
     </div>
 </div>
 
 <script>
 // ------------------------------------------------------------
-// 1. ЗВЁЗДЫ (уменьшено до 70, тонкие линии)
+// 1. ЗВЁЗДЫ (70 шт, тонкие линии)
 // ------------------------------------------------------------
 const canvas = document.getElementById('starCanvas');
 const ctx = canvas.getContext('2d');
