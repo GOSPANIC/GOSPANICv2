@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Majestic Helper — Безопасная загрузка</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Creepster&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --accent: #a06cff;
+            --accent-dim: rgba(160, 100, 255, 0.15);
+            --accent-glow: rgba(160, 100, 255, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a12;
+            font-family: 'Rajdhani', sans-serif;
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .app-window {
+            position: relative;
+            width: 96vw;
+            max-width: 900px;
+            height: 92vh;
+            max-height: 750px;
+            background: rgba(12, 12, 24, 0.82);
+            backdrop-filter: blur(8px);
+            border-radius: 18px;
+            border: 1px solid var(--accent-dim);
+            box-shadow: 0 0 80px var(--accent-glow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 18px 20px 20px 20px;
+            transition: border-color 0.4s, box-shadow 0.4s;
+        }
+        #starCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            border-radius: 18px;
+        }
+
+        /* ---- АНИМИРОВАННЫЙ ВОДЯНОЙ ЗНАК ---- */
+        .watermark {
+            position: absolute;
+            bottom: 20px;
+            right: 28px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 400;
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+            z-index: 20;
+            pointer-events: none;
+            user-select: none;
+            animation: watermarkPulse 3s ease-in-out infinite;
+        }
+        .watermark i {
+            margin-right: 6px;
+            color: rgba(160, 100, 255, 0.4);
+            animation: inherit;
+        }
+        @keyframes watermarkPulse {
+            0% {
+                opacity: 0.25;
+                text-shadow: 0 0 5px rgba(160, 100, 255, 0.1);
+            }
+            50% {
+                opacity: 0.75;
+                text-shadow: 0 0 25px rgba(160, 100, 255, 0.5), 0 0 50px rgba(160, 100, 255, 0.2);
+            }
+            100% {
+                opacity: 0.25;
+                text-shadow: 0 0 5px rgba(160, 100, 255, 0.1);
+            }
+        }
+
+        .header {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--accent-dim);
+            margin-bottom: 14px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo i {
+            font-size: 2rem;
+            color: var(--accent);
+            text-shadow: 0 0 30px var(--accent-glow);
+        }
+        .logo h1 {
+            font-family: 'Creepster', cursive;
+            font-weight: 400;
+            font-size: 2.2rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #ff4444, #aa00ff, #ff4444);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: horrorGlow 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255, 68, 68, 0.4);
+            transform: skew(-5deg);
+        }
+        @keyframes horrorGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .logo span {
+            font-size: 0.85rem;
+            color: #888;
+            font-weight: 300;
+            border-left: 1px solid var(--accent-dim);
+            padding-left: 14px;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 10px 6px 20px 6px;
+            gap: 24px;
+        }
+        .greeting {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #c8b0ff;
+        }
+        .greeting i { color: var(--accent); margin-right: 10px; }
+        .description {
+            font-size: 1.2rem;
+            color: #aaa;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 36px;
+            border-radius: 40px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(135deg, #7a4bff, var(--accent));
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px var(--accent-glow);
+            letter-spacing: 0.5px;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px var(--accent-glow);
+        }
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--accent);
+            box-shadow: none;
+        }
+        .btn-secondary:hover {
+            background: var(--accent-dim);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+        .btn i {
+            font-size: 1.5rem;
+        }
+        .footer-note {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        .footer-note i {
+            color: var(--accent);
+            margin-right: 6px;
+        }
+
+        /* ---- НОВЫЙ ФУТЕР С ЛИЦЕНЗИЕЙ ---- */
+        .site-footer {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0 4px 0;
+            border-top: 1px solid var(--accent-dim);
+            margin-top: 6px;
+            font-size: 0.8rem;
+            color: #666;
+            letter-spacing: 0.5px;
+        }
+        .site-footer i {
+            color: var(--accent);
+            margin: 0 4px;
+        }
+        .site-footer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .site-footer a:hover {
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        @media (max-width: 600px) {
+            .app-window { padding: 12px; height: 96vh; }
+            .logo h1 { font-size: 1.6rem; }
+            .greeting { font-size: 1.5rem; }
+            .buttons { flex-direction: column; align-items: stretch; }
+            .btn { justify-content: center; }
+            .watermark { font-size: 0.75rem; bottom: 12px; right: 16px; }
+            .site-footer { font-size: 0.65rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-window">
+    <canvas id="starCanvas"></canvas>
+    <div class="watermark"><i class="fas fa-code"></i> by Reznov FAMQxGOSPANIC</div>
+
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-shield-virus"></i>
+            <h1>Majestic Helper</h1>
+            <span>Безопасная загрузка</span>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="greeting"><i class="fas fa-download"></i> Скачать файл</div>
+        <div class="description">
+            Здесь вы можете безопасно скачать файл. Перед загрузкой рекомендуем проверить его через VirusTotal.
+        </div>
+
+        <div class="buttons">
+            <a href="#" class="btn" id="downloadBtn"><i class="fas fa-download"></i> Скачать с Яндекс Диска</a>
+            <a href="https://www.virustotal.com/gui/home/upload" target="_blank" class="btn btn-secondary"><i class="fas fa-shield-alt"></i> Проверить на VirusTotal</a>
+        </div>
+
+        <div class="footer-note">
+            <i class="fas fa-info-circle"></i> Если ссылка на скачивание не работает, обратитесь к автору.
+        </div>
+    </div>
+
+    <!-- НОВЫЙ ФУТЕР -->
+    <div class="site-footer">
+        <i class="fas fa-copyright"></i> 2026 Reznov FAMQ. All rights reserved. 
+        <i class="fas fa-code-branch" style="margin-left: 8px;"></i> 
+        <a href="#" target="_blank">MIT License</a>
+    </div>
+</div>
+
+<script>
+// ------------------------------------------------------------
+// 1. ЗВЁЗДЫ (уменьшено до 70, тонкие линии)
+// ------------------------------------------------------------
+const canvas = document.getElementById('starCanvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+let stars = [];
+const NUM_STARS = 70;
+const CONNECTION_DIST = 120;
+const ATTRACTION_RADIUS = 180;
+let mouse = { x: -1000, y: -1000 };
+let currentStarColor = '#a06cff';
+let animId = null;
+
+function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    W = canvas.width;
+    H = canvas.height;
+}
+window.addEventListener('resize', resize);
+
+class Star {
+    constructor() { this.reset(); }
+    reset() {
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        this.radius = Math.random() * 1.2 + 0.5;
+        this.vx = (Math.random() - 0.5) * 0.3;
+        this.vy = (Math.random() - 0.5) * 0.3;
+    }
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < ATTRACTION_RADIUS && dist > 1) {
+            const force = (ATTRACTION_RADIUS - dist) / ATTRACTION_RADIUS * 0.05;
+            this.vx += dx / dist * force;
+            this.vy += dy / dist * force;
+        }
+        this.vx *= 0.995;
+        this.vy *= 0.995;
+        if (this.x < 0 || this.x > W) { this.vx *= -0.5; this.x = Math.min(Math.max(this.x, 0), W); }
+        if (this.y < 0 || this.y > H) { this.vy *= -0.5; this.y = Math.min(Math.max(this.y, 0), H); }
+        const speed = Math.hypot(this.vx, this.vy);
+        if (speed > 1.2) { this.vx = (this.vx/speed)*1.2; this.vy = (this.vy/speed)*1.2; }
+    }
+    draw(color) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        if (this.radius > 0.8) {
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 6;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+    }
+}
+
+function initStars() {
+    stars = [];
+    for (let i=0; i<NUM_STARS; i++) stars.push(new Star());
+}
+
+function drawLines(color) {
+    for (let i=0; i<stars.length; i++) {
+        for (let j=i+1; j<stars.length; j++) {
+            const dx = stars[i].x - stars[j].x;
+            const dy = stars[i].y - stars[j].y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < CONNECTION_DIST) {
+                const alpha = (1 - dist/CONNECTION_DIST) * 0.15;
+                ctx.beginPath();
+                ctx.moveTo(stars[i].x, stars[i].y);
+                ctx.lineTo(stars[j].x, stars[j].y);
+                ctx.strokeStyle = color.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+                ctx.lineWidth = 0.3;
+                ctx.stroke();
+            }
+        }
+    }
+    for (const s of stars) {
+        const dx = mouse.x - s.x;
+        const dy = mouse.y - s.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < ATTRACTION_RADIUS && dist > 10) {
+            const alpha = (1 - dist/ATTRACTION_RADIUS) * 0.1;
+            ctx.beginPath();
+            ctx.moveTo(s.x, s.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = color.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+            ctx.lineWidth = 0.3;
+            ctx.stroke();
+        }
+    }
+}
+
+function animate() {
+    ctx.clearRect(0, 0, W, H);
+    const color = currentStarColor;
+    for (const s of stars) {
+        s.update();
+        s.draw(color);
+    }
+    drawLines(color);
+    animId = requestAnimationFrame(animate);
+}
+
+const appWindow = document.querySelector('.app-window');
+appWindow.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+});
+appWindow.addEventListener('mouseleave', () => {
+    mouse.x = -1000;
+    mouse.y = -1000;
+});
+
+resize();
+initStars();
+animate();
+
+// ------------------------------------------------------------
+// 2. ОБРАБОТЧИК КНОПКИ СКАЧИВАНИЯ
+// ------------------------------------------------------------
+document.getElementById('downloadBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    const yandexLink = 'https://disk.yandex.ru/d/ваша_ссылка';
+    window.open(yandexLink, '_blank');
+});
+
+console.log('Majestic Helper загружен.');
+</script>
+</body>
+</html>
